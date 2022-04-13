@@ -17,7 +17,7 @@ export default function App() {
         </div>
 
         <div className="bio">
-          Heyo
+          So far only rinkeby, soon fuji
         </div>
 
         <button className="connectWallet" onClick={connectWallet}>
