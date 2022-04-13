@@ -1,8 +1,15 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import './App.css';
+import abi from './utils/Fund.json';
 
 export default function App() {
+  const [currentAccount, setCurrentAccount] = useState("");
+  const contractAddress = "";
+
+  const checkIfWalletIsConnected = async () => {
+    
+  }
 
   const connectWallet = () => {
     
