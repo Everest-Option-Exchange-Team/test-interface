@@ -5,7 +5,8 @@ import abi from './utils/Fund.json';
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "";
+  const contractAddress = "0x479E9da1f7a5a1Ae2EBD7bCBd05958107485afb6";
+  const contractABI = abi.abi;
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -63,7 +64,7 @@ export default function App() {
         </div>
 
         <div className="bio">
-          So far only rinkeby, soon fuji
+          Fuji!!
         </div>
 
         <button className="connectWallet" onClick={connectWallet}>
