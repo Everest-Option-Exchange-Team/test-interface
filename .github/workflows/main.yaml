@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: name: 📦 Use Node.js v16.14.2 (LTS)
+    - name: 📦 Use Node.js v16.14.2 (LTS)
       uses: actions/setup-node@v3
       with:
         node-version: 16.14.2
