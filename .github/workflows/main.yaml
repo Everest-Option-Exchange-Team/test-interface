@@ -16,8 +16,6 @@ jobs:
         cache: 'npm'
     - name: Install dependencies
       run: npm install
-    - name: Start
-      run: CI="" npm start
     - name: Run tests
       run: npm test
     - name: Build
