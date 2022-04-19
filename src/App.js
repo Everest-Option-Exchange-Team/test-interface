@@ -74,7 +74,21 @@ export default function App() {
   }
 
   const withdraw = async () => {
+    updateAmountFunded();
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
+        fundContract.withdraw(amountFunded);
+      } else {
+        console.log("Ethereum object doesn't exist");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const updateAmountFunded = async () => {
