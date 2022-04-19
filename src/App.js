@@ -9,7 +9,9 @@ export default function App() {
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractAddress = "0x5081f431918Ccc62DBDfaCBc11f34B4166A27450";
   const contractABI = abi.abi;
-  let amountFunded = BigNumber.from('0');
+  const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
+  const [amountDeposit, setAmountDeposit] = useState(0);
+  const [amountWithdraw, setAmountWithdraw] = useState(0);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -64,8 +66,8 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        fundContract.fund({ value: ethers.utils.parseEther("1")});
-        amountFunded = amountFunded.add(ethers.utils.parseEther("1"));
+        await fundContract.fund({ value: ethers.utils.parseEther(amountDeposit)});
+        updateAmountFunded();
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -83,7 +85,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        fundContract.withdraw(amountFunded);
+        fundContract.withdraw(amountWithdraw);
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -102,7 +104,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        amountFunded = BigNumber.from((await fundContract.getAddressToAmountFunded(currentAccount)).toHexString());
+        setAmountFunded(BigNumber.from((await fundContract.getAddressToAmountFunded(currentAccount)).toHexString()));
         
       } else {
         console.log("Ethereum object doesn't exist");
@@ -139,15 +141,15 @@ export default function App() {
         </button>)
         }
         <div>
-          <button onClick={updateAmountFunded}> Update amount Funded </button>
-          Avalanche Funded: {amountFunded.toString()}
+          <button onClick={updateAmountFunded}> Update amount Funded</button>
+          Avalanche Funded: {amountFunded.toString()} AVAX
         </div>
         <div>
-          <NumericInput min={0} value={0} step={0.1}/>
+          <NumericInput min={0} value={0} step={0.1} onChange={e => {setAmountDeposit(e.target.value)}}/>
           <button onClick={deposit}>Deposit</button>
         </div>
         <div>
-          <NumericInput min={0} value={0} step={0.1}/>
+          <NumericInput min={0} value={0} step={0.1} onChange={e => {setAmountWithdraw(e.target.value)}}/>
           <button onClick={withdraw}>Withdraw</button>
         </div>
       </div>
