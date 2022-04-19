@@ -104,7 +104,10 @@ export default function App() {
               Connect Wallet
         </button>)
         }
-        <div>Avalanche Funded: {amountFunded}</div>
+        <div>
+          Avalanche Funded: {amountFunded}
+          <button onClick={updateAmountFunded}> Update amount Funded </button>
+        </div>
         <div>
           <NumericInput min={0} value={0} step={0.1}/>
           <button>Deposit</button>
