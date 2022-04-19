@@ -89,7 +89,10 @@ export default function App() {
           <NumericInput min={0} value={0}/>
           <button>Deposit</button>
         </div>
-        
+        <div>
+          <NumericInput min={0} value={0}/>
+          <button>Withdraw</button>
+        </div>
       </div>
     </div>
   );
