@@ -86,11 +86,11 @@ export default function App() {
         </button>)
         }
         <div>
-          <NumericInput min={0} value={0}/>
+          <NumericInput min={0} value={0} step={0.1}/>
           <button>Deposit</button>
         </div>
         <div>
-          <NumericInput min={0} value={0}/>
+          <NumericInput min={0} value={0} step={0.1}/>
           <button>Withdraw</button>
         </div>
       </div>
