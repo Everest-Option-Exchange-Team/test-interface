@@ -66,7 +66,7 @@ export default function App() {
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
         fundContract.fund({ value: ethers.utils.parseEther("1")});
-        amountFunded.plus(ethers.utils.parseEther("1"));
+        amountFunded = amountFunded.plus(ethers.utils.parseEther("1"));
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -94,7 +94,7 @@ export default function App() {
   }
 
   const updateAmountFunded = async () => {
-    console.log(amountFunded.shiftedBy(10).toNumber());
+    console.log(amountFunded);
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -102,7 +102,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        amountFunded = BigNumber(await fundContract.getAddressToAmountFunded(currentAccount));
+        amountFunded = await fundContract.getAddressToAmountFunded(currentAccount);
         
       } else {
         console.log("Ethereum object doesn't exist");
