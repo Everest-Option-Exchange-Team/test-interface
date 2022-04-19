@@ -3,6 +3,7 @@ import NumericInput from "react-numeric-input";
 import { ethers } from "ethers";
 import './App.css';
 import abi from './utils/Fund.json';
+import { BigNumber } from "ethers";
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -64,7 +65,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        fundContract.fund();
+        fundContract.fund({ value: ethers.utils.parseEther("1")});
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -137,7 +138,7 @@ export default function App() {
         }
         <div>
           <button onClick={updateAmountFunded}> Update amount Funded </button>
-          Avalanche Funded: {amountFunded}
+          Avalanche Funded: {amountFunded / Math.pow(10, 10)}
         </div>
         <div>
           <NumericInput min={0} value={0} step={0.1}/>
