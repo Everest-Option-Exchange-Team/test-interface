@@ -7,7 +7,7 @@ import abi from './utils/Fund.json';
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
-  const contractAddress = "0x5897b2b05e90501Fb9b6107FD8eFe006c199A82B";
+  const contractAddress = "0x5081f431918Ccc62DBDfaCBc11f34B4166A27450";
   const contractABI = abi.abi;
   const [amountFunded, setAmountFunded] = useState("");
 
@@ -71,11 +71,6 @@ export default function App() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
-
-        console.log(signer.address);
-        console.log(signer);
-        console.log(fundContract);
-        console.log(currentAccount);
 
         const amount = await fundContract.getAddressToAmountFunded(currentAccount);
         setAmountFunded(amount);
