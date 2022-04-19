@@ -72,7 +72,12 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        const amount = await fundContract.getAddressToAmountFunded(signer);
+        console.log(signer.address);
+        console.log(signer);
+        console.log(fundContract);
+        console.log(currentAccount);
+
+        const amount = await fundContract.getAddressToAmountFunded(currentAccount);
         setAmountFunded(amount);
       } else {
         console.log("Ethereum object doesn't exist");
