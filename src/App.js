@@ -3,14 +3,14 @@ import NumericInput from "react-numeric-input";
 import { ethers } from "ethers";
 import './App.css';
 import abi from './utils/Fund.json';
-import { BigNumber } from "ethers";
+import BigNumber from "bignumber.js"
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractAddress = "0x5081f431918Ccc62DBDfaCBc11f34B4166A27450";
   const contractABI = abi.abi;
-  const [amountFunded, setAmountFunded] = useState(0);
+  let amountFunded = new BigNumber('0');
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -66,6 +66,7 @@ export default function App() {
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
         fundContract.fund({ value: ethers.utils.parseEther("1")});
+        amountFunded.plus(ethers.utils.parseEther("1"));
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -93,6 +94,7 @@ export default function App() {
   }
 
   const updateAmountFunded = async () => {
+    console.log(amountFunded.shiftedBy(10).toNumber());
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -100,8 +102,8 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        const amount = await fundContract.getAddressToAmountFunded(currentAccount);
-        setAmountFunded(amount.toNumber());
+        amountFunded = BigNumber(await fundContract.getAddressToAmountFunded(currentAccount));
+        
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -138,7 +140,7 @@ export default function App() {
         }
         <div>
           <button onClick={updateAmountFunded}> Update amount Funded </button>
-          Avalanche Funded: {amountFunded}
+          Avalanche Funded: {amountFunded.toNumber()}
         </div>
         <div>
           <NumericInput min={0} value={0} step={0.1}/>
