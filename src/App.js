@@ -66,7 +66,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        await fundContract.fund({ value: ethers.utils.parseEther(amountDeposit)});
+        await fundContract.fund({ value: ethers.utils.parseEther(amountDeposit.toString())});
         updateAmountFunded();
       } else {
         console.log("Ethereum object doesn't exist");
@@ -85,7 +85,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        fundContract.withdraw(amountWithdraw);
+        fundContract.withdraw(ethers.utils.parseEther(amountWithdraw.toString()));
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -145,11 +145,11 @@ export default function App() {
           Avalanche Funded: {amountFunded.toString()} AVAX
         </div>
         <div>
-          <NumericInput min={0} value={0} step={0.1} onChange={e => {setAmountDeposit(e.target.value)}}/>
+          <NumericInput min={0} value={amountDeposit} step={0.1} onChange={valueAsNumber => {setAmountDeposit(valueAsNumber)}}/>
           <button onClick={deposit}>Deposit</button>
         </div>
         <div>
-          <NumericInput min={0} value={0} step={0.1} onChange={e => {setAmountWithdraw(e.target.value)}}/>
+          <NumericInput min={0} value={amountWithdraw} step={0.1} onChange={valueAsNumber => {setAmountWithdraw(valueAsNumber)}}/>
           <button onClick={withdraw}>Withdraw</button>
         </div>
       </div>
