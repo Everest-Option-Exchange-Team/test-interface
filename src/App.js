@@ -5,6 +5,7 @@ import abi from './utils/Fund.json';
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
+  const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractAddress = "0x479E9da1f7a5a1Ae2EBD7bCBd05958107485afb6";
   const contractABI = abi.abi;
 
@@ -25,6 +26,7 @@ export default function App() {
         const account = accounts[0];
         console.log("Found an authorized account: ", account);
         setCurrentAccount(account);
+        setCurrentlyConnected(true);
       } else {
         console.log("No authorized account found");
       }
@@ -46,6 +48,7 @@ export default function App() {
 
       console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
+      setCurrentlyConnected(true);
     } catch(error) {
       console.error(error);
     }
@@ -69,9 +72,15 @@ export default function App() {
           Fuji!!
         </div>
 
-        <button className="connectWallet" onClick={connectWallet}>
-          Connect Wallet
-        </button>
+        { isCurrentlyConnected ? 
+          (<div>
+            connected with {currentAccount}
+          </div>) : 
+          ( <button className="connectWallet" onClick={connectWallet}>
+              Connect Wallet
+        </button>)
+        }
+        
       </div>
     </div>
   );
