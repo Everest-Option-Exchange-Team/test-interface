@@ -7,7 +7,7 @@ import abi from './utils/Fund.json';
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
-  const contractAddress = "0x479E9da1f7a5a1Ae2EBD7bCBd05958107485afb6";
+  const contractAddress = "0x5897b2b05e90501Fb9b6107FD8eFe006c199A82B";
   const contractABI = abi.abi;
   const [amountFunded, setAmountFunded] = useState("");
 
