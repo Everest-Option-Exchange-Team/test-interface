@@ -140,7 +140,7 @@ export default function App() {
         }
         <div>
           <button onClick={updateAmountFunded}> Update amount Funded </button>
-          Avalanche Funded: {amountFunded.toNumber()}
+          Avalanche Funded: {amountFunded.toString()}
         </div>
         <div>
           <NumericInput min={0} value={0} step={0.1}/>
