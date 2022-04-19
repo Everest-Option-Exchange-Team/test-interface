@@ -87,6 +87,7 @@ export default function App() {
         }
         <div>
           <NumericInput min={0} value={0}/>
+          <button>Deposit</button>
         </div>
         
       </div>
