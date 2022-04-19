@@ -60,6 +60,10 @@ export default function App() {
 
   }
 
+  const withdraw = async () => {
+
+  }
+
   const updateAmountFunded = async () => {
     try {
       const { ethereum } = window;
@@ -105,16 +109,16 @@ export default function App() {
         </button>)
         }
         <div>
-          Avalanche Funded: {amountFunded}
           <button onClick={updateAmountFunded}> Update amount Funded </button>
+          Avalanche Funded: {amountFunded}
         </div>
         <div>
           <NumericInput min={0} value={0} step={0.1}/>
-          <button>Deposit</button>
+          <button onClick={deposit}>Deposit</button>
         </div>
         <div>
           <NumericInput min={0} value={0} step={0.1}/>
-          <button>Withdraw</button>
+          <button onClick={withdraw}>Withdraw</button>
         </div>
       </div>
     </div>
