@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import NumericInput from "react-numeric-input";
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import './App.css';
 import abi from './utils/Fund.json';
-import BigNumber from "bignumber.js"
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractAddress = "0x5081f431918Ccc62DBDfaCBc11f34B4166A27450";
   const contractABI = abi.abi;
-  let amountFunded = new BigNumber('0');
+  let amountFunded = BigNumber.from('0');
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -66,7 +65,7 @@ export default function App() {
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
         fundContract.fund({ value: ethers.utils.parseEther("1")});
-        amountFunded = amountFunded.plus(ethers.utils.parseEther("1"));
+        amountFunded = amountFunded.add(ethers.utils.parseEther("1"));
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -95,6 +94,7 @@ export default function App() {
 
   const updateAmountFunded = async () => {
     console.log(amountFunded);
+    console.log(amountFunded.toString());
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -102,7 +102,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        amountFunded = await fundContract.getAddressToAmountFunded(currentAccount);
+        amountFunded = BigNumber.from((await fundContract.getAddressToAmountFunded(currentAccount)).toHexString());
         
       } else {
         console.log("Ethereum object doesn't exist");
