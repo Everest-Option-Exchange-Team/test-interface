@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import NumericInput from "react-numeric-input";
 import { ethers } from "ethers";
 import './App.css';
 import abi from './utils/Fund.json';
@@ -54,6 +55,10 @@ export default function App() {
     }
   }
 
+  const deposit = async () => {
+
+  }
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
@@ -80,6 +85,9 @@ export default function App() {
               Connect Wallet
         </button>)
         }
+        <div>
+          <NumericInput min={0} value={0}/>
+        </div>
         
       </div>
     </div>
