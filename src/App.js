@@ -9,7 +9,7 @@ export default function App() {
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractAddress = "0x5081f431918Ccc62DBDfaCBc11f34B4166A27450";
   const contractABI = abi.abi;
-  const [amountFunded, setAmountFunded] = useState("");
+  const [amountFunded, setAmountFunded] = useState(0);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -73,7 +73,7 @@ export default function App() {
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
         const amount = await fundContract.getAddressToAmountFunded(currentAccount);
-        setAmountFunded(amount);
+        setAmountFunded(amount.toNumber());
       } else {
         console.log("Ethereum object doesn't exist");
       }
