@@ -9,6 +9,7 @@ export default function App() {
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractAddress = "0x479E9da1f7a5a1Ae2EBD7bCBd05958107485afb6";
   const contractABI = abi.abi;
+  const [amountFunded, setAmountFunded] = useState("");
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -59,6 +60,24 @@ export default function App() {
 
   }
 
+  const updateAmountFunded = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const amount = await fundContract.getAddressToAmountFunded(signer);
+        setAmountFunded(amount);
+      } else {
+        console.log("Ethereum object doesn't exist");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
@@ -85,6 +104,7 @@ export default function App() {
               Connect Wallet
         </button>)
         }
+        <div>Avalanche Funded: {amountFunded}</div>
         <div>
           <NumericInput min={0} value={0} step={0.1}/>
           <button>Deposit</button>
