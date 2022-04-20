@@ -155,7 +155,7 @@ export default function App() {
         </div>
 
         <div className="bio">
-          Total funds of contract: {formatAvax(totalAmountFunded).toString()}
+          Total funds of contract: {formatAvax(totalAmountFunded).toString()} AVAX
         </div>
 
         { isCurrentlyConnected ? 
