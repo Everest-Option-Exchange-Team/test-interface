@@ -121,7 +121,7 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        setTotalAmountFunded(BigNumber.from((await fundContract.getTotalFunds().toHexString())));
+        setTotalAmountFunded(BigNumber.from((await fundContract.getTotalFunds()).toHexString()));
         
       } else {
         console.log("Ethereum object doesn't exist");
@@ -141,7 +141,7 @@ export default function App() {
 
   useEffect(() => {
     updateAmountFunded();
-    //updateTotalAmountFunded();
+    updateTotalAmountFunded();
   }, [currentAccount, amountFunded]);
 
 
@@ -167,7 +167,7 @@ export default function App() {
         </button>)
         }
         <div>
-          <button onClick={updateAmountFunded}> Update amount Funded</button>
+          <button onClick={updateTotalAmountFunded}> Update amount Funded</button>
           Avalanche Funded: {formatAvax(amountFunded).toString()} AVAX
         </div>
         <div>
