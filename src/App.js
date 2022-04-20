@@ -12,6 +12,7 @@ export default function App() {
   const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
   const [amountDeposit, setAmountDeposit] = useState(0);
   const [amountWithdraw, setAmountWithdraw] = useState(0);
+  const [totalAmountFunded, setTotalAmountFunded] = useState(BigNumber.from('0'));
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -95,8 +96,6 @@ export default function App() {
   }
 
   const updateAmountFunded = async () => {
-    console.log(amountFunded);
-    console.log(amountFunded.toString());
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -105,6 +104,24 @@ export default function App() {
         const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
 
         setAmountFunded(BigNumber.from((await fundContract.getAddressToAmountFunded(currentAccount)).toHexString()));
+        
+      } else {
+        console.log("Ethereum object doesn't exist");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const updateTotalAmountFunded = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        setTotalAmountFunded(BigNumber.from((await fundContract.getTotalFunds().toHexString())));
         
       } else {
         console.log("Ethereum object doesn't exist");
@@ -124,6 +141,7 @@ export default function App() {
 
   useEffect(() => {
     updateAmountFunded();
+    //updateTotalAmountFunded();
   }, [currentAccount, amountFunded]);
 
 
@@ -137,7 +155,7 @@ export default function App() {
         </div>
 
         <div className="bio">
-          Fuji!!
+          Total funds of contract: {formatAvax(totalAmountFunded).toString()}
         </div>
 
         { isCurrentlyConnected ? 
