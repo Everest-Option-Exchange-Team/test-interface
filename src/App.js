@@ -122,6 +122,10 @@ export default function App() {
     checkIfWalletIsConnected();
   }, []);
 
+  useEffect(() => {
+    updateAmountFunded();
+  }, [isCurrentlyConnected])
+
 
   
   return (
