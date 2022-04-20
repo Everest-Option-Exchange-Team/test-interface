@@ -114,6 +114,10 @@ export default function App() {
     }
   }
 
+  const formatAvax = (bigNumber) => {
+    return ethers.utils.formatEther(bigNumber);
+  }
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
@@ -142,7 +146,7 @@ export default function App() {
         }
         <div>
           <button onClick={updateAmountFunded}> Update amount Funded</button>
-          Avalanche Funded: {amountFunded.toString()} AVAX
+          Avalanche Funded: {formatAvax(amountFunded).toString()} AVAX
         </div>
         <div>
           <NumericInput min={0} value={amountDeposit} step={0.1} onChange={valueAsNumber => {setAmountDeposit(valueAsNumber)}}/>
