@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
 import './App.css';
@@ -95,7 +95,7 @@ export default function App() {
     }
   }
 
-  const updateAmountFunded = async () => {
+  const updateAmountFunded = useCallback(async () => {
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -111,9 +111,9 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }
+  }, [contractABI, currentAccount]);
 
-  const updateTotalAmountFunded = async () => {
+  const updateTotalAmountFunded = useCallback(async () => {
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -129,7 +129,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }
+  }, [contractABI]);
 
   const formatAvax = (bigNumber) => {
     return ethers.utils.formatEther(bigNumber);
@@ -142,7 +142,7 @@ export default function App() {
   useEffect(() => {
     updateAmountFunded();
     updateTotalAmountFunded();
-  }, [currentAccount, amountFunded]);
+  }, [currentAccount, amountFunded, updateTotalAmountFunded, updateAmountFunded]);
 
 
   
