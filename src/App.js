@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
 import './App.css';
-import abi from './utils/Fund.json';
+import abi from './abis/Fund.json';
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
