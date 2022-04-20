@@ -124,7 +124,7 @@ export default function App() {
 
   useEffect(() => {
     updateAmountFunded();
-  }, [currentAccount])
+  }, [currentAccount, amountFunded]);
 
 
   
