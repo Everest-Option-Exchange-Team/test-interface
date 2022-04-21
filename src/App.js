@@ -3,14 +3,13 @@ import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
 import './App.css';
 import abi from './abis/Fund.json';
-
 require("dotenv").config();
+
+const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
-  const contractAddress = process.env.CONTRACT_ADDRESS;
-  console.log(contractAddress);
   const contractABI = abi.abi;
   const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
   const [amountDeposit, setAmountDeposit] = useState(0);
@@ -68,7 +67,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         await fundContract.fund({ value: ethers.utils.parseEther(amountDeposit.toString())});
         updateAmountFunded();
@@ -87,7 +86,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         fundContract.withdraw(ethers.utils.parseEther(amountWithdraw.toString()));
       } else {
@@ -104,7 +103,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         setAmountFunded(BigNumber.from((await fundContract.getAddressToAmountFunded(currentAccount)).toHexString()));
         
@@ -122,7 +121,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         setTotalAmountFunded(BigNumber.from((await fundContract.getTotalFunds()).toHexString()));
         
