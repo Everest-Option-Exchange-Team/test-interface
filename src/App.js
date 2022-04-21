@@ -3,16 +3,20 @@ import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
 import './App.css';
 import abi from './abis/Fund.json';
+require("dotenv").config();
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
-  const contractAddress = "0x5081f431918Ccc62DBDfaCBc11f34B4166A27450";
   const contractABI = abi.abi;
   const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
   const [amountDeposit, setAmountDeposit] = useState(0);
   const [amountWithdraw, setAmountWithdraw] = useState(0);
   const [totalAmountFunded, setTotalAmountFunded] = useState(BigNumber.from('0'));
+
+  // Check if contract address is defined.
+  const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
+  console.log(`Contract address: ${CONTRACT_ADDRESS}`);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -65,7 +69,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         await fundContract.fund({ value: ethers.utils.parseEther(amountDeposit.toString())});
         updateAmountFunded();
@@ -84,7 +88,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         fundContract.withdraw(ethers.utils.parseEther(amountWithdraw.toString()));
       } else {
@@ -101,7 +105,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         setAmountFunded(BigNumber.from((await fundContract.getAddressToAmountFunded(currentAccount)).toHexString()));
         
@@ -111,7 +115,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [contractABI, currentAccount]);
+  }, [CONTRACT_ADDRESS, contractABI, currentAccount]);
 
   const updateTotalAmountFunded = useCallback(async () => {
     try {
@@ -119,7 +123,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const fundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         setTotalAmountFunded(BigNumber.from((await fundContract.getTotalFunds()).toHexString()));
         
@@ -129,7 +133,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [contractABI]);
+  }, [CONTRACT_ADDRESS, contractABI]);
 
   const formatAvax = (bigNumber) => {
     return ethers.utils.formatEther(bigNumber);
@@ -151,7 +155,7 @@ export default function App() {
 
       <div className="dataContainer">
         <div className="header">
-        Hey there!
+          Hey there!
         </div>
 
         <div className="bio">
