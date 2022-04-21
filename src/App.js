@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
-require("dotenv").config();
 import './App.css';
 import abi from './abis/Fund.json';
+
+const process = require("dotenv").config();
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
-  const { CONTRACT_ADDRESS } = process.env;
+  const { contractAddress } = process.env;
   const contractABI = abi.abi;
   const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
   const [amountDeposit, setAmountDeposit] = useState(0);
