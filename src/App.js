@@ -153,7 +153,8 @@ export default function App() {
 
       <div className="dataContainer">
         <div className="header">
-        Hey there!
+          <h1>Hey there!</h1>
+          <p>Contract address: {CONTRACT_ADDRESS}</p>
         </div>
 
         <div className="bio">
