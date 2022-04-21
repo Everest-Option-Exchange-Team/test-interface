@@ -14,7 +14,7 @@ export default function App() {
   const [amountWithdraw, setAmountWithdraw] = useState(0);
   const [totalAmountFunded, setTotalAmountFunded] = useState(BigNumber.from('0'));
 
-  // Check if contract address is defined
+  // Check if contract address is defined.
   const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
   console.log(`Contract address: ${CONTRACT_ADDRESS}`);
 
@@ -115,7 +115,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [contractABI, currentAccount]);
+  }, [CONTRACT_ADDRESS, contractABI, currentAccount]);
 
   const updateTotalAmountFunded = useCallback(async () => {
     try {
@@ -133,7 +133,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [contractABI]);
+  }, [CONTRACT_ADDRESS, contractABI]);
 
   const formatAvax = (bigNumber) => {
     return ethers.utils.formatEther(bigNumber);
