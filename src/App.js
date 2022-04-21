@@ -5,8 +5,6 @@ import './App.css';
 import abi from './abis/Fund.json';
 require("dotenv").config();
 
-const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
-
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
@@ -15,6 +13,10 @@ export default function App() {
   const [amountDeposit, setAmountDeposit] = useState(0);
   const [amountWithdraw, setAmountWithdraw] = useState(0);
   const [totalAmountFunded, setTotalAmountFunded] = useState(BigNumber.from('0'));
+
+  // Check if contract address is defined
+  const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
+  console.log(`Contract address: ${CONTRACT_ADDRESS}`);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -153,8 +155,7 @@ export default function App() {
 
       <div className="dataContainer">
         <div className="header">
-          <h1>Hey there!</h1>
-          <p>Contract address: {CONTRACT_ADDRESS}</p>
+          Hey there!
         </div>
 
         <div className="bio">
