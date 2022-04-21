@@ -4,12 +4,13 @@ import { ethers, BigNumber } from "ethers";
 import './App.css';
 import abi from './abis/Fund.json';
 
-const process = require("dotenv").config();
+require("dotenv").config();
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
-  const { contractAddress } = process.env;
+  const contractAddress = process.env.CONTRACT_ADDRESS;
+  console.log(contractAddress);
   const contractABI = abi.abi;
   const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
   const [amountDeposit, setAmountDeposit] = useState(0);
