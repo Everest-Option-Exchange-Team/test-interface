@@ -16,6 +16,8 @@ jobs:
         cache: 'npm'
     - name: Install dependencies
       run: npm install
+    - name: 🪄 Set up env
+      run: cp .env.sample .env
     # - name: Run tests
       # run: npm test
     - name: Build
