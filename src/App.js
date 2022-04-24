@@ -146,7 +146,7 @@ export default function App() {
   useEffect(() => {
     updateAmountFunded();
     updateTotalAmountFunded();
-  }, [currentAccount, amountFunded, updateTotalAmountFunded, updateAmountFunded]);
+  }, [updateTotalAmountFunded, updateAmountFunded]); //currentAccount, amountFunded, 
 
 
   
