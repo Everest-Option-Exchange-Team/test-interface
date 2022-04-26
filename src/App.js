@@ -6,6 +6,8 @@ import abi from './abis/Fund.json';
 require("dotenv").config();
 
 export default function App() {
+  const [loadingDeposit, setLoadingDeposit] = useState(false);
+  const [loadingWithdraw, setLoadingWithdraw] = useState(false);
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractABI = abi.abi;
@@ -151,6 +153,7 @@ export default function App() {
 
           setAmountFunded(amountTotalBigNum);
           setTotalAmountFunded(amountTotalContractBigNum);
+          setLoadingDeposit(false);
         })
         
       } else {
@@ -177,6 +180,7 @@ export default function App() {
 
           setAmountFunded(amountTotalBigNum);
           setTotalAmountFunded(amountTotalContractBigNum);
+          setLoadingWithdraw(false);
         })
         
       } else {
@@ -234,11 +238,28 @@ export default function App() {
         </div>
         <div>
           <NumericInput min={0} value={amountDeposit} step={0.1} onChange={valueAsNumber => {setAmountDeposit(valueAsNumber)}}/>
-          <button onClick={deposit}>Deposit</button>
+          <button onClick={
+            () => {
+              deposit();
+              setAmountDeposit(0);
+              setLoadingDeposit(true);
+            }
+            }>
+              {loadingDeposit ? "loading ..." : "Deposit"}
+              </button>
         </div>
         <div>
           <NumericInput min={0} value={amountWithdraw} step={0.1} onChange={valueAsNumber => {setAmountWithdraw(valueAsNumber)}}/>
-          <button onClick={withdraw}>Withdraw</button>
+          <button onClick={
+            () => {
+              withdraw();
+              setAmountWithdraw(0);
+              setLoadingWithdraw(true);
+            }
+            }>
+              {loadingWithdraw ? "loading ..." : "Withdraw"}
+              
+              </button>
         </div>
       </div>
     </div>
