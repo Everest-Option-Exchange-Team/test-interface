@@ -161,6 +161,32 @@ export default function App() {
     }
   }, [CONTRACT_ADDRESS, contractABI]); 
 
+  const updateOnWithdraw = useCallback(async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
+
+        // amountTotal is for one account (see smart contract Fund.sol)
+        fundContract.on("Withdraw", async (from, amountAdded, amountTotal) => {
+
+          const amountTotalBigNum = BigNumber.from(amountTotal.toHexString());
+          const amountTotalContractBigNum = BigNumber.from((await fundContract.getTotalFunds()).toHexString());
+
+          setAmountFunded(amountTotalBigNum);
+          setTotalAmountFunded(amountTotalContractBigNum);
+        })
+        
+      } else {
+        console.log("Ethereum object doesn't exist");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [CONTRACT_ADDRESS, contractABI]); 
+
 
   const formatAvax = (bigNumber) => {
     return ethers.utils.formatEther(bigNumber);
@@ -180,7 +206,8 @@ export default function App() {
   // called whenever there is a smart contract event
   useEffect(() => {
     updateOnDeposit(); 
-  },[updateOnDeposit])
+    updateOnWithdraw();
+  },[updateOnDeposit, updateOnWithdraw])
   
   return (
     <div className="mainContainer">
