@@ -150,8 +150,11 @@ export default function App() {
 
           const amountTotalBigNum = BigNumber.from(amountTotal.toHexString());
           const amountTotalContractBigNum = BigNumber.from((await fundContract.getTotalFunds()).toHexString());
+          
+          if (currentAccount === from){
+            setAmountFunded(amountTotalBigNum);
+          }
 
-          setAmountFunded(amountTotalBigNum);
           setTotalAmountFunded(amountTotalContractBigNum);
           setLoadingDeposit(false);
         })
@@ -178,7 +181,9 @@ export default function App() {
           const amountTotalBigNum = BigNumber.from(amountTotal.toHexString());
           const amountTotalContractBigNum = BigNumber.from((await fundContract.getTotalFunds()).toHexString());
 
-          setAmountFunded(amountTotalBigNum);
+          if (currentAccount === from){
+            setAmountFunded(amountTotalBigNum);
+          }
           setTotalAmountFunded(amountTotalContractBigNum);
           setLoadingWithdraw(false);
         })
