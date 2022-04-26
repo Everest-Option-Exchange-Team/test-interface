@@ -135,7 +135,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [CONTRACT_ADDRESS, contractABI]);
+  }, [currentAccount, CONTRACT_ADDRESS, contractABI]);
 
   const updateOnDeposit = useCallback(async () => {
     try {
@@ -165,7 +165,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [CONTRACT_ADDRESS, contractABI]); 
+  }, [currentAccount, CONTRACT_ADDRESS, contractABI]); 
 
   const updateOnWithdraw = useCallback(async () => {
     try {
