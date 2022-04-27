@@ -82,7 +82,21 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
-        await fundContract.fund({ value: ethers.utils.parseEther(amountDeposit.toString())});
+        fundContract
+          .fund({ value: ethers.utils.parseEther(amountDeposit.toString())})
+          .then((tx)=>{
+            //action prior to transaction being mined
+            provider.waitForTransaction(tx.hash)
+          .then(()=>{
+             //action after transaction is mined
+            })
+          })
+          .catch(()=>{
+          //action to perform when user clicks "reject"
+            setShowEventSnackbar(true);
+            setTypeOfEvent("failure");
+            setLoadingDeposit(false);
+          });
       } else {
         console.log("Ethereum object doesn't exist");
       }
@@ -99,7 +113,21 @@ export default function App() {
         const signer = provider.getSigner();
         const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
-        fundContract.withdraw(ethers.utils.parseEther(amountWithdraw.toString()));
+        fundContract
+          .withdraw(ethers.utils.parseEther(amountWithdraw.toString()))
+          .then((tx)=>{
+            //action prior to transaction being mined
+            provider.waitForTransaction(tx.hash)
+          .then(()=>{
+             //action after transaction is mined
+          })
+       })
+       .catch(()=>{
+       //action to perform when user clicks "reject"
+            setShowEventSnackbar(true);
+            setTypeOfEvent("failure");
+            setLoadingWithdraw(false);
+       });
       } else {
         console.log("Ethereum object doesn't exist");
       }
