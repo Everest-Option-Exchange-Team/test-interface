@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import EventSnackBar from "./Snackbar";
 import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
 import './App.css';
@@ -6,14 +7,22 @@ import abi from './abis/Fund.json';
 require("dotenv").config();
 
 export default function App() {
-  const [loadingDeposit, setLoadingDeposit] = useState(false);
-  const [loadingWithdraw, setLoadingWithdraw] = useState(false);
+  // smart contract event related
+  const [showEventSnackbar, setShowEventSnackbar] = useState(false);
+  const [addressOfEventInducer, setAddressOfEventInducer] = useState("");
+  const [typeOfEvent, setTypeOfEvent] = useState("");
+  const [amountChanged, setAmountChanged] = useState(0);
+  // wallet connection
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
   const contractABI = abi.abi;
-  const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
+  // change of UI
+  const [loadingDeposit, setLoadingDeposit] = useState(false);
+  const [loadingWithdraw, setLoadingWithdraw] = useState(false);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const [amountWithdraw, setAmountWithdraw] = useState(0);
+  // stats of smart contract
+  const [amountFunded, setAmountFunded] = useState(BigNumber.from('0'));
   const [totalAmountFunded, setTotalAmountFunded] = useState(BigNumber.from('0'));
 
   // Check if contract address is defined.
@@ -146,13 +155,19 @@ export default function App() {
         const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         // amountTotal is for one account (see smart contract Fund.sol)
-        fundContract.on("Deposit", async (from, amountAdded, amountTotal) => {
+        fundContract.on("Deposit", async (from, amountDeposited, amountTotal) => {
 
           const amountTotalBigNum = BigNumber.from(amountTotal.toHexString());
+          const amountChangedBigNum = BigNumber.from(amountDeposited.toHexString());
+          const amountChanged = formatAvax(amountChangedBigNum);
           const amountTotalContractBigNum = BigNumber.from((await fundContract.getTotalFunds()).toHexString());
           
-          if (currentAccount === from){
+          if (currentAccount === from.toLowerCase()){
             setAmountFunded(amountTotalBigNum);
+            setShowEventSnackbar(true);
+            setAddressOfEventInducer(from);
+            setTypeOfEvent("deposited");
+            setAmountChanged(amountChanged);
           }
 
           setTotalAmountFunded(amountTotalContractBigNum);
@@ -176,13 +191,20 @@ export default function App() {
         const fundContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
 
         // amountTotal is for one account (see smart contract Fund.sol)
-        fundContract.on("Withdraw", async (from, amountAdded, amountTotal) => {
+        fundContract.on("Withdraw", async (from, amountWithdrawn, amountTotal) => {
 
           const amountTotalBigNum = BigNumber.from(amountTotal.toHexString());
+          const amountChangedBigNum = BigNumber.from(amountWithdrawn.toHexString());
+          const amountChanged = formatAvax(amountChangedBigNum);
           const amountTotalContractBigNum = BigNumber.from((await fundContract.getTotalFunds()).toHexString());
 
-          if (currentAccount === from){
+          // only change these aspects of the UI for the inducer account
+          if (currentAccount === from.toLowerCase()){
             setAmountFunded(amountTotalBigNum);
+            setShowEventSnackbar(true);
+            setAddressOfEventInducer(from);
+            setTypeOfEvent("withdrew");
+            setAmountChanged(amountChanged);
           }
           setTotalAmountFunded(amountTotalContractBigNum);
           setLoadingWithdraw(false);
@@ -199,6 +221,11 @@ export default function App() {
 
   const formatAvax = (bigNumber) => {
     return ethers.utils.formatEther(bigNumber);
+  }
+
+  // for snackbar
+  const handleClose = () => {
+    setShowEventSnackbar(false);
   }
 
   // only calling once (mounting)
@@ -220,7 +247,7 @@ export default function App() {
   
   return (
     <div className="mainContainer">
-
+      <EventSnackBar showEvent={showEventSnackbar} close={handleClose} address={addressOfEventInducer} amount={amountChanged} type={typeOfEvent}/>
       <div className="dataContainer">
         <div className="header">
           Hey there!
