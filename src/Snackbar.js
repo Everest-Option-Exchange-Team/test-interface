@@ -2,7 +2,7 @@ import React from "react";
 import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from "@material-ui/core";
 
-// need props
+
 export default function EventSnackBar({showEvent, close, address, amount, type}) {
 
     return (
