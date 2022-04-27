@@ -56,6 +56,34 @@ export default function App() {
     }
   }
 
+  const checkIfCorrectBlockchain = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        alert("Get Metamask!");
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const networkInfo = await provider.getNetwork();
+      const { chainId } = networkInfo;
+      // 1
+      // 43113
+      // 43114
+      if (!(chainId === 43113 || chainId === 43114)) {
+        alert('Connect with Fuji Avalanche or C-Mainnet')
+      }
+      // {
+      //   chainId: 1,
+      //   ensAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+      //   name: 'homestead'
+      // }
+    } catch (error) {
+      
+    }
+    
+  }
+
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
@@ -267,6 +295,11 @@ export default function App() {
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
+
+  // call every time
+  useEffect(() => {
+    checkIfCorrectBlockchain();
+  });
 
   // calling when readTotalAmountFunded, readFundsByAccount are newly created => happens if one of the dependencies change
   useEffect(() => {
