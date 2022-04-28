@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import EventSnackBar from "./Snackbar";
+import WrongBlockchainDialog from "./AlertDialog";
 import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
 import './App.css';
@@ -16,6 +17,7 @@ export default function App() {
   // wallet connection
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
+  const [showDialogWrongBlockchain, setShowDialogWrongBlockchain] = useState(false);
   const contractABI = abi.abi;
   // change of UI
   const [loadingDeposit, setLoadingDeposit] = useState(false);
@@ -67,22 +69,80 @@ export default function App() {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const networkInfo = await provider.getNetwork();
       const { chainId } = networkInfo;
-      // 1
-      // 43113
-      // 43114
       if (!(chainId === 43113 || chainId === 43114)) {
-        alert('Connect with Fuji Avalanche or C-Mainnet')
+        setShowDialogWrongBlockchain(true);
       }
-      // {
-      //   chainId: 1,
-      //   ensAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-      //   name: 'homestead'
-      // }
     } catch (error) {
       
     }
-    
   }
+
+  const updateOnBlockchainChanged = useCallback(async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        alert("Get Metamask!");
+        return;
+      }
+
+      ethereum.on('chainChanged', (chainId) => {
+        console.log(chainId);
+        // Handle the new chain.
+        if (!(chainId === 43113 || chainId === 43114)) {
+          setShowDialogWrongBlockchain(true);
+        }
+      });
+    } catch (error) {
+      
+    }
+  }, [setShowDialogWrongBlockchain])
+
+  const changeBlockchain = async () => {
+    try {
+      const { ethereum } = window;
+      if (!ethereum) {
+        alert("Get Metamask!");
+        return;
+      }
+      // 0xA869 == 43113 (Fuji)
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0xA869' }],}); // chainId must be in hexadecimal numbers
+      setShowDialogWrongBlockchain(false);
+      window.location.reload();
+
+    } catch (switchError) {
+      //error code (error.code) is 4902, then the requested chain has not been added by MetaMask
+      if (switchError.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0xA869',
+                chainName: 'Avalanche FUJI C-Chain',
+                rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+                blockExplorerUrls: ['https://testnet.snowtrace.io/'],
+                nativeCurrency: {
+                  name: 'Avalanche',
+                  symbol: 'AVAX', 
+                  decimals: 18
+                }
+              },
+            ],
+          });
+          
+          setShowDialogWrongBlockchain(false);
+          window.location.reload();
+        } catch (addError) {
+          // handle "add" error
+          alert("Please add Fuji to your Metamask!");
+          console.log(addError);
+        }
+    }
+  }
+};
 
   const connectWallet = async () => {
     try {
@@ -291,15 +351,27 @@ export default function App() {
     return ethers.utils.formatEther(bigNumber);
   }
 
-  // only calling once (mounting)
+  // for snackbar
+  const handleCloseSnackbar = () => {
+    setShowEventSnackbar(false);
+  }
+
+  // for Alertdialog wrong blockchain
+  const handleCloseDialogWrongBlockchain = () => {
+    // setShowDialogWrongBlockchain is set to false, once the rpc response of changing blockchain is successful
+    //setShowDialogWrongBlockchain(false);
+  }
+
+  // only calling once (mounting (also page refresh))
   useEffect(() => {
     checkIfWalletIsConnected();
+    checkIfCorrectBlockchain();
   }, []);
 
-  // call every time
+  // call ...
   useEffect(() => {
-    checkIfCorrectBlockchain();
-  });
+    updateOnBlockchainChanged();
+  }, [updateOnBlockchainChanged]);
 
   // calling when readTotalAmountFunded, readFundsByAccount are newly created => happens if one of the dependencies change
   useEffect(() => {
@@ -315,10 +387,11 @@ export default function App() {
   
   return (
     <div className="mainContainer">
-      <EventSnackBar showEvent={showEventSnackbar} transactionHash={transactionHash} blockNumber={transactionBlockNumber} type={typeOfEvent}/>
+      <EventSnackBar showEvent={showEventSnackbar} close={handleCloseSnackbar} address={addressOfEventInducer} amount={amountChanged} type={typeOfEvent}/>
+      <WrongBlockchainDialog showDialog={showDialogWrongBlockchain} close={handleCloseDialogWrongBlockchain} action={changeBlockchain}/>
       <div className="dataContainer">
         <div className="header">
-          Hey there!
+          Welcome to the Everest Protocol!
         </div>
 
         <div className="bio">
@@ -327,7 +400,7 @@ export default function App() {
 
         { isCurrentlyConnected ? 
           (<div className="bio">
-            connected with {currentAccount}
+            connected with {currentAccount.slice(0,5)}...{currentAccount.slice(-5,-1)}
           </div>) : 
           ( <button className="connectWallet" onClick={connectWallet}>
               Connect Wallet
@@ -365,4 +438,5 @@ export default function App() {
       </div>
     </div>
   );
-}
+  }
+
