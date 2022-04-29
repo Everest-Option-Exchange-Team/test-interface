@@ -1718,7 +1718,7 @@
     "@types/yargs" "^15.0.0"
     "chalk" "^3.0.0"
 
-"@material-ui/core@^4.12.4":
+"@material-ui/core@^4.0.0", "@material-ui/core@^4.12.4":
   "integrity" "sha512-tr7xekNlM9LjA6pagJmL8QCgZXaubWUwkJnoYcMKd4gw/t4XiyvnTkjdGrUVicyB2BsdaAv1tvow45bPM4sSwQ=="
   "resolved" "https://registry.npmjs.org/@material-ui/core/-/core-4.12.4.tgz"
   "version" "4.12.4"
@@ -3452,7 +3452,7 @@
     "kind-of" "^6.0.2"
     "shallow-clone" "^3.0.0"
 
-"clsx@^1.0.4":
+"clsx@^1.0.4", "clsx@^1.1.0":
   "integrity" "sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA=="
   "resolved" "https://registry.npmjs.org/clsx/-/clsx-1.1.1.tgz"
   "version" "1.1.1"
@@ -5691,7 +5691,7 @@
     "minimalistic-assert" "^1.0.0"
     "minimalistic-crypto-utils" "^1.0.1"
 
-"hoist-non-react-statics@^3.3.2":
+"hoist-non-react-statics@^3.3.0", "hoist-non-react-statics@^3.3.2":
   "integrity" "sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw=="
   "resolved" "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz"
   "version" "3.3.2"
@@ -7829,6 +7829,14 @@
     "prepend-http" "^1.0.0"
     "query-string" "^4.1.0"
     "sort-keys" "^1.0.0"
+
+"notistack@^1.0.10":
+  "integrity" "sha512-z0y4jJaVtOoH3kc3GtNUlhNTY+5LE04QDeLVujX3VPhhzg67zw055mZjrBF+nzpv3V9aiPNph1EgRU4+t8kQTQ=="
+  "resolved" "https://registry.npmjs.org/notistack/-/notistack-1.0.10.tgz"
+  "version" "1.0.10"
+  dependencies:
+    "clsx" "^1.1.0"
+    "hoist-non-react-statics" "^3.3.0"
 
 "npm-run-path@^2.0.0":
   "integrity" "sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8="
