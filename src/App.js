@@ -3,8 +3,10 @@ import EventSnackBar from "./Snackbar";
 import WrongBlockchainDialog from "./AlertDialog";
 import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
+import './constants/address';
 import './App.css';
 import abi from './abis/Fund.json';
+import { AVALANCHE_MAINNET_ID, FUJI_TESTNET_BLOCK_EXPLORER_URL, FUJI_TESTNET_CHAIN_NAME, FUJI_TESTNET_ID, FUJI_TESTNET_ID_HEX, FUJI_TESTNET_RPC_URL, MAIN_CURRENCY_DECIMALS, MAIN_CURRENCY_NAME, MAIN_CURRENCY_SYMBOL } from "./constants/address";
 require("dotenv").config();
 
 export default function App() {
@@ -69,7 +71,7 @@ export default function App() {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const networkInfo = await provider.getNetwork();
       const { chainId } = networkInfo;
-      if (!(chainId === 43113 || chainId === 43114)) {
+      if (!(chainId === FUJI_TESTNET_ID || chainId === AVALANCHE_MAINNET_ID)) {
         setShowDialogWrongBlockchain(true);
       }
     } catch (error) {
@@ -89,7 +91,7 @@ export default function App() {
       ethereum.on('chainChanged', (chainId) => {
         console.log(chainId);
         // Handle the new chain.
-        if (!(chainId === 43113 || chainId === 43114)) {
+        if (!(chainId === FUJI_TESTNET_ID || chainId === AVALANCHE_MAINNET_ID)) {
           setShowDialogWrongBlockchain(true);
         }
       });
@@ -105,10 +107,10 @@ export default function App() {
         alert("Get Metamask!");
         return;
       }
-      // 0xA869 == 43113 (Fuji)
+
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0xA869' }],}); // chainId must be in hexadecimal numbers
+        params: [{ chainId: FUJI_TESTNET_ID_HEX }],}); // chainId must be in hexadecimal numbers
       setShowDialogWrongBlockchain(false);
       window.location.reload();
 
@@ -120,14 +122,14 @@ export default function App() {
             method: 'wallet_addEthereumChain',
             params: [
               {
-                chainId: '0xA869',
-                chainName: 'Avalanche FUJI C-Chain',
-                rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
-                blockExplorerUrls: ['https://testnet.snowtrace.io/'],
+                chainId: FUJI_TESTNET_ID_HEX,
+                chainName: FUJI_TESTNET_CHAIN_NAME,
+                rpcUrls: [FUJI_TESTNET_RPC_URL],
+                blockExplorerUrls: [FUJI_TESTNET_BLOCK_EXPLORER_URL],
                 nativeCurrency: {
-                  name: 'Avalanche',
-                  symbol: 'AVAX', 
-                  decimals: 18
+                  name: MAIN_CURRENCY_NAME,
+                  symbol: MAIN_CURRENCY_SYMBOL, 
+                  decimals: MAIN_CURRENCY_DECIMALS
                 }
               },
             ],
