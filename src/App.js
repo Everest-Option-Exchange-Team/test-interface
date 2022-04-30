@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import EventSnackBar from "./Snackbar";
+import WrongBlockchainDialog from "./AlertDialog";
 import NumericInput from "react-numeric-input";
 import { ethers, BigNumber } from "ethers";
+import './constants/address';
 import './App.css';
 import abi from './abis/Fund.json';
+import { AVALANCHE_MAINNET_ID, FUJI_TESTNET_BLOCK_EXPLORER_URL, FUJI_TESTNET_CHAIN_NAME, FUJI_TESTNET_ID, FUJI_TESTNET_ID_HEX, FUJI_TESTNET_RPC_URL, MAIN_CURRENCY_DECIMALS, MAIN_CURRENCY_NAME, MAIN_CURRENCY_SYMBOL } from "./constants/address";
 require("dotenv").config();
 
 export default function App() {
@@ -16,6 +19,7 @@ export default function App() {
   // wallet connection
   const [currentAccount, setCurrentAccount] = useState("");
   const [isCurrentlyConnected, setCurrentlyConnected] = useState(false);
+  const [showDialogWrongBlockchain, setShowDialogWrongBlockchain] = useState(false);
   const contractABI = abi.abi;
   // change of UI
   const [loadingDeposit, setLoadingDeposit] = useState(false);
@@ -55,6 +59,92 @@ export default function App() {
       console.error(error);
     }
   }
+
+  const checkIfCorrectBlockchain = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        alert("Get Metamask!");
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const networkInfo = await provider.getNetwork();
+      const { chainId } = networkInfo;
+      if (!(chainId === FUJI_TESTNET_ID || chainId === AVALANCHE_MAINNET_ID)) {
+        setShowDialogWrongBlockchain(true);
+      }
+    } catch (error) {
+      
+    }
+  }
+
+  const updateOnBlockchainChanged = useCallback(async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        alert("Get Metamask!");
+        return;
+      }
+
+      ethereum.on('chainChanged', (chainId) => {
+        console.log(chainId);
+        // Handle the new chain.
+        if (!(chainId === FUJI_TESTNET_ID || chainId === AVALANCHE_MAINNET_ID)) {
+          setShowDialogWrongBlockchain(true);
+        }
+      });
+    } catch (error) {
+      
+    }
+  }, [setShowDialogWrongBlockchain])
+
+  const changeBlockchain = async () => {
+    try {
+      const { ethereum } = window;
+      if (!ethereum) {
+        alert("Get Metamask!");
+        return;
+      }
+
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: FUJI_TESTNET_ID_HEX }],}); // chainId must be in hexadecimal numbers
+      setShowDialogWrongBlockchain(false);
+      window.location.reload();
+
+    } catch (switchError) {
+      //error code (error.code) is 4902, then the requested chain has not been added by MetaMask
+      if (switchError.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: FUJI_TESTNET_ID_HEX,
+                chainName: FUJI_TESTNET_CHAIN_NAME,
+                rpcUrls: [FUJI_TESTNET_RPC_URL],
+                blockExplorerUrls: [FUJI_TESTNET_BLOCK_EXPLORER_URL],
+                nativeCurrency: {
+                  name: MAIN_CURRENCY_NAME,
+                  symbol: MAIN_CURRENCY_SYMBOL, 
+                  decimals: MAIN_CURRENCY_DECIMALS
+                }
+              },
+            ],
+          });
+          
+          setShowDialogWrongBlockchain(false);
+          window.location.reload();
+        } catch (addError) {
+          // handle "add" error
+          alert("Please add Fuji to your Metamask!");
+          console.log(addError);
+        }
+    }
+  }
+};
 
   const connectWallet = async () => {
     try {
@@ -263,10 +353,24 @@ export default function App() {
     return ethers.utils.formatEther(bigNumber);
   }
 
-  // only calling once (mounting)
+
+
+  // for Alertdialog wrong blockchain
+  const handleCloseDialogWrongBlockchain = () => {
+    // setShowDialogWrongBlockchain is set to false, once the rpc response of changing blockchain is successful
+    //setShowDialogWrongBlockchain(false);
+  }
+
+  // only calling once (mounting (also page refresh))
   useEffect(() => {
     checkIfWalletIsConnected();
+    checkIfCorrectBlockchain();
   }, []);
+
+  // call ...
+  useEffect(() => {
+    updateOnBlockchainChanged();
+  }, [updateOnBlockchainChanged]);
 
   // calling when readTotalAmountFunded, readFundsByAccount are newly created => happens if one of the dependencies change
   useEffect(() => {
@@ -283,9 +387,10 @@ export default function App() {
   return (
     <div className="mainContainer">
       <EventSnackBar showEvent={showEventSnackbar} transactionHash={transactionHash} blockNumber={transactionBlockNumber} type={typeOfEvent}/>
+      <WrongBlockchainDialog showDialog={showDialogWrongBlockchain} close={handleCloseDialogWrongBlockchain} action={changeBlockchain}/>
       <div className="dataContainer">
         <div className="header">
-          Hey there!
+          Welcome to the Everest Protocol!
         </div>
 
         <div className="bio">
@@ -294,7 +399,7 @@ export default function App() {
 
         { isCurrentlyConnected ? 
           (<div className="bio">
-            connected with {currentAccount}
+            connected with {currentAccount.slice(0,5)}...{currentAccount.slice(-5,-1)}
           </div>) : 
           ( <button className="connectWallet" onClick={connectWallet}>
               Connect Wallet
@@ -332,4 +437,5 @@ export default function App() {
       </div>
     </div>
   );
-}
+  }
+
