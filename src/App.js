@@ -255,6 +255,7 @@ export default function App() {
         </div>
         <div>
           <NumericInput min={0} value={amountWithdraw} step={0.1} onChange={valueAsNumber => {setAmountWithdraw(valueAsNumber)}}/>
+          <button onClick={() => {setAmountWithdraw(formatAvax(amountFunded).toString())}}>Select all my funds</button>
           <button onClick={
             () => {
               withdraw();
