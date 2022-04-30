@@ -353,10 +353,7 @@ export default function App() {
     return ethers.utils.formatEther(bigNumber);
   }
 
-  // for snackbar
-  const handleCloseSnackbar = () => {
-    setShowEventSnackbar(false);
-  }
+
 
   // for Alertdialog wrong blockchain
   const handleCloseDialogWrongBlockchain = () => {
@@ -389,7 +386,7 @@ export default function App() {
   
   return (
     <div className="mainContainer">
-      <EventSnackBar showEvent={showEventSnackbar} close={handleCloseSnackbar} address={addressOfEventInducer} amount={amountChanged} type={typeOfEvent}/>
+      <EventSnackBar showEvent={showEventSnackbar} transactionHash={transactionHash} blockNumber={transactionBlockNumber} type={typeOfEvent}/>
       <WrongBlockchainDialog showDialog={showDialogWrongBlockchain} close={handleCloseDialogWrongBlockchain} action={changeBlockchain}/>
       <div className="dataContainer">
         <div className="header">
