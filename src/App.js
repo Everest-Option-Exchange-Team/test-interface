@@ -9,9 +9,7 @@ require("dotenv").config();
 export default function App() {
   // smart contract event related
   const [showEventSnackbar, setShowEventSnackbar] = useState(false);
-  //const [addressOfEventInducer, setAddressOfEventInducer] = useState("");
   const [typeOfEvent, setTypeOfEvent] = useState("");
-  //const [amountChanged, setAmountChanged] = useState(0);
   // transaction chain data
   const [transactionHash, setTransactionHash] = useState("");
   const [transactionBlockNumber, setTransactionBlockNumber] = useState("");
@@ -91,6 +89,10 @@ export default function App() {
               //action prior to transaction being mined
               setTypeOfEvent("sent");
               setShowEventSnackbar(true);
+              /* 
+              directly queue not displaying snackbar, otherwise with re-rendering page
+              with the same snackbar (with withdraw the same)
+              */
               setShowEventSnackbar(false);
               provider.waitForTransaction(tx.hash)
                 .then((transactionReceipt)=>{
@@ -104,10 +106,11 @@ export default function App() {
                   })
           })
           .catch(()=>{
-          //action to perform when user clicks "reject"
+              //action to perform when user clicks "reject" in the metamask interface
               setTypeOfEvent("failure");
               setLoadingDeposit(false);
               setShowEventSnackbar(true);
+              setShowEventSnackbar(false);
           });
       } else {
         console.log("Ethereum object doesn't exist");
@@ -207,16 +210,10 @@ export default function App() {
         fundContract.on("Deposit", async (from, amountDeposited, amountTotal) => {
 
           const amountTotalBigNum = BigNumber.from(amountTotal.toHexString());
-          //const amountChangedBigNum = BigNumber.from(amountDeposited.toHexString());
-          //const amountChanged = formatAvax(amountChangedBigNum);
           const amountTotalContractBigNum = BigNumber.from((await fundContract.getTotalFunds()).toHexString());
           
           if (currentAccount === from.toLowerCase()){
             setAmountFunded(amountTotalBigNum);
-            setShowEventSnackbar(true);
-            //setAddressOfEventInducer(from);
-            setTypeOfEvent("deposited");
-            //setAmountChanged(amountChanged);
           }
 
           setTotalAmountFunded(amountTotalContractBigNum);
@@ -243,17 +240,11 @@ export default function App() {
         fundContract.on("Withdraw", async (from, amountWithdrawn, amountTotal) => {
 
           const amountTotalBigNum = BigNumber.from(amountTotal.toHexString());
-          //const amountChangedBigNum = BigNumber.from(amountWithdrawn.toHexString());
-          //const amountChanged = formatAvax(amountChangedBigNum);
           const amountTotalContractBigNum = BigNumber.from((await fundContract.getTotalFunds()).toHexString());
 
           // only change these aspects of the UI for the inducer account
           if (currentAccount === from.toLowerCase()){
             setAmountFunded(amountTotalBigNum);
-            setShowEventSnackbar(true);
-            //setAddressOfEventInducer(from);
-            setTypeOfEvent("withdrew");
-            //setAmountChanged(amountChanged);
           }
           setTotalAmountFunded(amountTotalContractBigNum);
           setLoadingWithdraw(false);
@@ -271,11 +262,6 @@ export default function App() {
   const formatAvax = (bigNumber) => {
     return ethers.utils.formatEther(bigNumber);
   }
-
-  // // for snackbar
-  // const handleClose = () => {
-  //   setShowEventSnackbar(false);
-  // }
 
   // only calling once (mounting)
   useEffect(() => {
